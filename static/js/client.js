@@ -244,8 +244,8 @@
           for (var i in bitmaps) {
             var bitmap = bitmaps[i];
             bitmap["data"] = parse(bitmaps[i].data);
-            // console.log(bitmap);
-            // console.log("[mstsc.js] bitmap update925:" + bitmap.bitsPerPixel);
+            console.log(bitmap);
+            console.log("[mstsc.js] bitmap update925:" + bitmap.bitsPerPixel);
             self.render.update(bitmap);
           }
         })
