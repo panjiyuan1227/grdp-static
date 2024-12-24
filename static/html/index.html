@@ -90,13 +90,19 @@
 			}
 		}
 
+		function hideCanvas() {
+			clients.forEach((client, i) => {
+				client.canvas.style.display = 'none';
+			});
+		}
+
 		window.addEventListener('message', (event) => {
 			// 验证消息来源
 			if (event.origin !== 'http://wails.localhost:34116' && event.origin !== 'http://localhost') {
 				return; // 忽略不信任的来源
 			}
 			console.log('Received from parent:', event.data);
-			const { ip, port, domain = '', username, password, type, connId } = event.data;
+			const { ip, port, domain = '', username, password, type, connId, forceNew = false } = event.data;
 			const index = clients.findIndex(client => client.canvas.id === connId);
 			const curClient = clients[index];
 			console.log('1104------发起连接')
@@ -108,11 +114,7 @@
 				curClient.keyup(event.data)
 			} else if (type === 'show') {
 				// 隐藏其他画布
-				clients.forEach((client, i) => {
-					// if (i !== index) {
-					client.canvas.style.display = 'none';
-					// }
-				});
+				hideCanvas();
 				if (index !== -1) {
 					const { width, height } = event.data;
 					// 显示当前 connId 的画布
@@ -131,7 +133,11 @@
 			} else if (type === 'reconnect') {
 				disconnect(connId);
 				connect(ip, port, domain, username, password, connId, 0, 0, true);
-			} else {
+			}
+			else {
+				if (forceNew) {
+					hideCanvas();
+				}
 				connect(ip, port, domain, username, password, connId);
 			}
 		});
